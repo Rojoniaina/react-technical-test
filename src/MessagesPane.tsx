@@ -3,24 +3,14 @@ import Sheet from "@mui/joy/Sheet";
 import Stack from "@mui/joy/Stack";
 import Typography from "@mui/joy/Typography";
 import ChatBubble from "./ChatBubble";
-import useFetch from "./useFetch";
-import { Issue, User } from "./types";
-
-type Comment = {
-  id: number;
-  created_at: string;
-  user: User;
-  body: string;
-};
+import { Issue, Comment } from "./types";
 
 interface MessagesPaneProps {
   issue?: Issue;
-  isFetched: boolean;
+  comments?: Comment[];
 }
 
-export default function MessagesPane({ issue, isFetched }: MessagesPaneProps) {
-  const { data: comments } = useFetch<Comment[]>({ url: issue?.comments_url }, { enabled: isFetched });
-
+export default function MessagesPane({ issue, comments }: MessagesPaneProps) {
   return (
     <Sheet
       sx={{

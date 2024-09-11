@@ -1,13 +1,16 @@
 import Input from "@mui/joy/Input";
 import Sheet from "@mui/joy/Sheet";
 import { ChangeEvent } from "react";
+import { User } from "./types";
+import { Box, Typography, List, ListItem, ListItemDecorator, Avatar, ListItemContent } from "@mui/joy";
 
 interface SidebarProps {
-  search: string;
+  search?: string;
   setSearch: (data: any) => void;
+  users: User[];
 }
 
-export default function Sidebar({ search, setSearch }: SidebarProps) {
+export default function Sidebar({ search, setSearch, users }: SidebarProps) {
   const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
@@ -30,6 +33,28 @@ export default function Sidebar({ search, setSearch }: SidebarProps) {
       }}
     >
       <Input onChange={handleChangeSearch} value={search} />
+      <Box sx={{ width: 320 }}>
+        <Typography
+          id="ellipsis-list-demo"
+          level="body-xs"
+          sx={{ textTransform: "uppercase", letterSpacing: "0.15rem" }}
+        >
+          Users
+        </Typography>
+        <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
+          {users.length > 0 &&
+            users.map((user, index) => (
+              <ListItem key={index}>
+                <ListItemDecorator>
+                  <Avatar src={user.avatar_url} />
+                </ListItemDecorator>
+                <ListItemContent>
+                  <Typography level="title-sm">{user.login}</Typography>
+                </ListItemContent>
+              </ListItem>
+            ))}
+        </List>
+      </Box>
     </Sheet>
   );
 }
