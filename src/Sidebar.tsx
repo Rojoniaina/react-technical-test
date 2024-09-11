@@ -1,7 +1,17 @@
 import Input from "@mui/joy/Input";
 import Sheet from "@mui/joy/Sheet";
+import { ChangeEvent } from "react";
 
-export default function Sidebar() {
+interface SidebarProps {
+  search: string;
+  setSearch: (data: any) => void;
+}
+
+export default function Sidebar({ search, setSearch }: SidebarProps) {
+  const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
+
   return (
     <Sheet
       className="Sidebar"
@@ -19,7 +29,7 @@ export default function Sidebar() {
         borderColor: "divider",
       }}
     >
-      <Input value="facebook/react/issues/7901" />
+      <Input onChange={handleChangeSearch} value={search} />
     </Sheet>
   );
 }
