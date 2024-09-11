@@ -3,6 +3,11 @@ export type User = {
   avatar_url: string;
 };
 
+export type UserCount = {
+  user: User;
+  nbComments: number;
+};
+
 export type Issue = {
   id: number;
   created_at: string;

@@ -4,13 +4,13 @@ import { CssVarsProvider } from "@mui/joy/styles";
 import MessagesPane from "./MessagesPane";
 import Sidebar from "./Sidebar";
 import useFetch from "./useFetch";
-import { Issue, Comment, User } from "./types";
+import { Issue, Comment, UserCount } from "./types";
 import { GITHUB_REPO_URL } from "./constant";
 import { useEffect, useState } from "react";
 
 function App() {
   const [search, setSearch] = useState<string>();
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserCount[]>([]);
   const [usersFilter, setUsersFilter] = useState<string[]>([]);
 
   const { data: issue, isFetched } = useFetch<Issue>(
@@ -25,15 +25,15 @@ function App() {
 
   useEffect(() => {
     if (comments?.length) {
-      const reduceUser = comments.reduce((previewsUsers: User[], currentComment: Comment) => {
+      const reduceUser = comments.reduce((previewsUsers: UserCount[], currentComment: Comment) => {
         if (!currentComment.user) {
           return previewsUsers;
         }
-        if (previewsUsers.map((user) => user.login).includes(currentComment.user.login)) {
+        if (previewsUsers.map((prev) => prev.user.login).includes(currentComment.user.login)) {
           return previewsUsers;
         }
-
-        return [...previewsUsers, currentComment.user];
+        const nbComments = comments.filter((c) => c.user.login === currentComment.user.login).length;
+        return [...previewsUsers, { user: currentComment.user, nbComments }];
       }, []);
       setUsers(reduceUser);
     } else {
