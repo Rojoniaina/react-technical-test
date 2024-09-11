@@ -6,11 +6,12 @@ import { Box, Typography, List, ListItem, ListItemDecorator, Avatar, ListItemCon
 
 interface SidebarProps {
   search?: string;
-  setSearch: (data: any) => void;
+  setSearch: (data: string) => void;
   users: User[];
+  selectUser: (userLogin: string) => void;
 }
 
-export default function Sidebar({ search, setSearch, users }: SidebarProps) {
+export default function Sidebar({ search, setSearch, users, selectUser }: SidebarProps) {
   const handleChangeSearch = (event: ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
@@ -44,7 +45,7 @@ export default function Sidebar({ search, setSearch, users }: SidebarProps) {
         <List aria-labelledby="ellipsis-list-demo" sx={{ "--ListItemDecorator-size": "56px" }}>
           {users.length > 0 &&
             users.map((user, index) => (
-              <ListItem key={index}>
+              <ListItem key={index} onClick={() => selectUser(user.login)}>
                 <ListItemDecorator>
                   <Avatar src={user.avatar_url} />
                 </ListItemDecorator>
