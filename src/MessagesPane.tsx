@@ -3,36 +3,14 @@ import Sheet from "@mui/joy/Sheet";
 import Stack from "@mui/joy/Stack";
 import Typography from "@mui/joy/Typography";
 import ChatBubble from "./ChatBubble";
-import useFetch from "./useFetch";
+import { Issue, Comment } from "./types";
 
-type User = {
-  login: string;
-  avatar_url: string;
-};
+interface MessagesPaneProps {
+  issue?: Issue;
+  comments?: Comment[];
+}
 
-type Issue = {
-  id: number;
-  created_at: string;
-  user: User;
-
-  number: number;
-  title: string;
-  body: string;
-  comments_url: string;
-};
-
-type Comment = {
-  id: number;
-  created_at: string;
-  user: User;
-
-  body: string;
-};
-
-export default function MessagesPane() {
-  const issue = useFetch<Issue>({ url: "https://api.github.com/repos/facebook/react/issues/7901" });
-  const comments = useFetch<Comment[]>({ url: issue.data?.comments_url }, { enabled: issue.isFetched });
-
+export default function MessagesPane({ issue, comments }: MessagesPaneProps) {
   return (
     <Sheet
       sx={{
@@ -42,7 +20,7 @@ export default function MessagesPane() {
         backgroundColor: "background.level1",
       }}
     >
-      {issue.data && (
+      {issue && issue?.user && (
         <Stack
           direction="column"
           justifyContent="space-between"
@@ -68,25 +46,32 @@ export default function MessagesPane() {
                   borderRadius: "sm",
                 }}
               >
-                #{issue.data?.number}
+                #{issue?.number}
               </Chip>
             }
           >
-            {issue.data.title}
+            {issue.title}
           </Typography>
-          <Typography level="body-sm">{issue.data.user.login}</Typography>
+          <Typography level="body-sm">{issue.user.login}</Typography>
         </Stack>
       )}
-      {comments.data && (
+      {comments && (
         <Stack spacing={2} justifyContent="flex-end" px={2} py={3}>
-          <ChatBubble variant="solid" {...issue.data!} />
-          {comments.data.map((comment) => (
-            <ChatBubble
-              key={comment.id}
-              variant={comment.user.login === issue.data!.user.login ? "solid" : "outlined"}
-              {...comment}
-            />
-          ))}
+          <ChatBubble variant="solid" {...issue!} />
+          {comments?.length &&
+            comments?.map((comment) => (
+              <ChatBubble
+                key={comment.id}
+                variant={comment.user.login === issue!.user.login ? "solid" : "outlined"}
+                {...comment}
+              />
+            ))}
+        </Stack>
+      )}
+
+      {!issue && !comments && (
+        <Stack spacing={2} justifyContent="flex-end" px={2} py={3}>
+          Issue not found.
         </Stack>
       )}
     </Sheet>
